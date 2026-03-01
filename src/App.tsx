@@ -5,6 +5,7 @@ import FlightDetail from './pages/FlightDetail';
 import RailwayLineList from './pages/RailwayLineList';
 import RailwayLineDetail from './pages/RailwayLineDetail';
 import RailwayTripList from './pages/RailwayTripList';
+import TravelFootprint from './pages/TravelFootprint';
 
 function App() {
   return (
@@ -24,6 +25,12 @@ function App() {
                     className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
                   >
                     统计
+                  </Link>
+                  <Link
+                    to="/travel-footprint"
+                    className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    旅行足迹
                   </Link>
                   <Link
                     to="/flights"
@@ -52,6 +59,7 @@ function App() {
         {/* Routes */}
         <Routes>
           <Route path="/" element={<Dashboard />} />
+          <Route path="/travel-footprint" element={<TravelFootprint />} />
           <Route path="/flights" element={<FlightList />} />
           <Route path="/flights/:id" element={<FlightDetail />} />
           <Route path="/railway/lines" element={<RailwayLineList />} />
