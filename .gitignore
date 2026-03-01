@@ -35,3 +35,13 @@ yarn-error.log*
 *.png
 *.jpg
 *.jpeg
+
+# Data files (large binary/text files)
+*.kml
+*.gpx
+*.csv
+*.json
+*.xlsx
+*.xls
+flight/
+铁路/
