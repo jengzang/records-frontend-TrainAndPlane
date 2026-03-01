@@ -7,6 +7,7 @@ import RailwayLineDetail from './pages/RailwayLineDetail';
 import RailwayTripList from './pages/RailwayTripList';
 import TravelFootprint from './pages/TravelFootprint';
 import TravelStatistics from './pages/TravelStatistics';
+import CarbonEmission from './pages/CarbonEmission';
 
 function App() {
   return (
@@ -40,6 +41,12 @@ function App() {
                     统计增强
                   </Link>
                   <Link
+                    to="/carbon-emission"
+                    className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    碳排放
+                  </Link>
+                  <Link
                     to="/flights"
                     className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
                   >
@@ -68,6 +75,7 @@ function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/travel-footprint" element={<TravelFootprint />} />
           <Route path="/travel-statistics" element={<TravelStatistics />} />
+          <Route path="/carbon-emission" element={<CarbonEmission />} />
           <Route path="/flights" element={<FlightList />} />
           <Route path="/flights/:id" element={<FlightDetail />} />
           <Route path="/railway/lines" element={<RailwayLineList />} />

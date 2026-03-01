@@ -63,4 +63,10 @@ export const flightApi = {
     const response = await axios.get(`${API_BASE}/statistics/enhanced`);
     return response.data;
   },
+
+  // Get carbon emission analysis
+  getCarbonEmission: async (): Promise<any> => {
+    const response = await axios.get(`${API_BASE}/carbon-emission`);
+    return response.data;
+  },
 };
