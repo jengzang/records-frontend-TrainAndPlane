@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { flightApi } from '../services/flightApi';
+import { railwayApi } from '../services/railwayApi';
 import type { FlightSummary, AirlineStatistics } from '../types/flight';
+import type { RailwayStatistics } from '../types/railway';
 
 const Dashboard: React.FC = () => {
-  const [summary, setSummary] = useState<FlightSummary | null>(null);
+  const [flightSummary, setFlightSummary] = useState<FlightSummary | null>(null);
+  const [railwayStats, setRailwayStats] = useState<RailwayStatistics | null>(null);
   const [airlines, setAirlines] = useState<AirlineStatistics[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -16,11 +19,13 @@ const Dashboard: React.FC = () => {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [summaryData, airlinesData] = await Promise.all([
-        flightApi.getSummary(),
-        flightApi.getAirlineStatistics(),
+      const [flightSummaryData, railwayStatsData, airlinesData] = await Promise.all([
+        flightApi.getSummary().catch(() => null),
+        railwayApi.getStatistics().catch(() => null),
+        flightApi.getAirlineStatistics().catch(() => []),
       ]);
-      setSummary(summaryData);
+      setFlightSummary(flightSummaryData);
+      setRailwayStats(railwayStatsData);
       setAirlines(airlinesData);
     } catch (error) {
       console.error('Failed to load data:', error);
@@ -51,22 +56,87 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">飞行统计</h1>
+      <h1 className="text-3xl font-bold text-gray-800 mb-6">交通统计</h1>
 
-      {/* Summary Cards */}
-      {summary && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <p className="text-sm text-gray-500 mb-2">总航班数</p>
-            <p className="text-3xl font-bold text-blue-600">{summary.total_flights}</p>
+      {/* Flight Summary Cards */}
+      {flightSummary && (
+        <>
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">航班统计</h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <p className="text-sm text-gray-500 mb-2">总航班数</p>
+              <p className="text-3xl font-bold text-blue-600">{flightSummary.total_flights}</p>
+            </div>
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <p className="text-sm text-gray-500 mb-2">总飞行距离</p>
+              <p className="text-3xl font-bold text-green-600">
+                {formatDistance(flightSummary.total_distance)}
+              </p>
+            </div>
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <p className="text-sm text-gray-500 mb-2">总飞行时长</p>
+              <p className="text-3xl font-bold text-purple-600">
+                {formatDuration(flightSummary.total_duration)}
+              </p>
+            </div>
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <p className="text-sm text-gray-500 mb-2">航空公司数</p>
+              <p className="text-3xl font-bold text-orange-600">{flightSummary.unique_airlines}</p>
+            </div>
           </div>
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <p className="text-sm text-gray-500 mb-2">总飞行距离</p>
-            <p className="text-3xl font-bold text-green-600">
-              {formatDistance(summary.total_distance)}
-            </p>
+        </>
+      )}
+
+      {/* Railway Summary Cards */}
+      {railwayStats && (
+        <>
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">铁路统计</h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <p className="text-sm text-gray-500 mb-2">铁路线路数</p>
+              <p className="text-3xl font-bold text-red-600">{railwayStats.total_lines}</p>
+            </div>
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <p className="text-sm text-gray-500 mb-2">乘车次数</p>
+              <p className="text-3xl font-bold text-blue-600">{railwayStats.total_trips}</p>
+            </div>
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <p className="text-sm text-gray-500 mb-2">总行程距离</p>
+              <p className="text-3xl font-bold text-green-600">
+                {formatDistance(railwayStats.total_distance)}
+              </p>
+            </div>
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <p className="text-sm text-gray-500 mb-2">总行程时长</p>
+              <p className="text-3xl font-bold text-purple-600">
+                {formatDuration(railwayStats.total_duration)}
+              </p>
+            </div>
           </div>
-          <div className="bg-white rounded-lg shadow-md p-6">
+        </>
+      )}
+
+      {/* Date Range */}
+      {flightSummary && flightSummary.date_range && (
+        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+          <h2 className="text-xl font-semibold mb-4">航班数据范围</h2>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-500">最早航班</p>
+              <p className="font-semibold text-gray-800">
+                {new Date(flightSummary.date_range.earliest).toLocaleDateString('zh-CN')}
+              </p>
+            </div>
+            <div className="text-gray-400">→</div>
+            <div>
+              <p className="text-sm text-gray-500">最近航班</p>
+              <p className="font-semibold text-gray-800">
+                {new Date(flightSummary.date_range.latest).toLocaleDateString('zh-CN')}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
             <p className="text-sm text-gray-500 mb-2">总飞行时长</p>
             <p className="text-3xl font-bold text-purple-600">
               {formatDuration(summary.total_duration)}

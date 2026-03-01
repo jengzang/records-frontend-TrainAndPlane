@@ -2,6 +2,9 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import FlightList from './pages/FlightList';
 import FlightDetail from './pages/FlightDetail';
+import RailwayLineList from './pages/RailwayLineList';
+import RailwayLineDetail from './pages/RailwayLineDetail';
+import RailwayTripList from './pages/RailwayTripList';
 
 function App() {
   return (
@@ -26,7 +29,19 @@ function App() {
                     to="/flights"
                     className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
                   >
-                    航班列表
+                    航班
+                  </Link>
+                  <Link
+                    to="/railway/lines"
+                    className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    铁路线路
+                  </Link>
+                  <Link
+                    to="/railway/trips"
+                    className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    乘车记录
                   </Link>
                 </div>
               </div>
@@ -39,6 +54,9 @@ function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/flights" element={<FlightList />} />
           <Route path="/flights/:id" element={<FlightDetail />} />
+          <Route path="/railway/lines" element={<RailwayLineList />} />
+          <Route path="/railway/lines/:id" element={<RailwayLineDetail />} />
+          <Route path="/railway/trips" element={<RailwayTripList />} />
         </Routes>
       </div>
     </Router>
