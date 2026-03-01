@@ -57,4 +57,10 @@ export const flightApi = {
     const response = await axios.get(`${API_BASE}/travel-footprint`);
     return response.data;
   },
+
+  // Get enhanced travel statistics
+  getTravelStatisticsEnhanced: async (): Promise<any> => {
+    const response = await axios.get(`${API_BASE}/statistics/enhanced`);
+    return response.data;
+  },
 };
